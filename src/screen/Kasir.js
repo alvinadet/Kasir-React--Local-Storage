@@ -68,7 +68,8 @@ export default class Kasir extends Component {
     });
     this.setState({
       transaction: data,
-      jumlah: jumlahTotal
+      jumlah: jumlahTotal,
+      kembalian: this.state.pemasukan - jumlahTotal
     });
 
     console.log(data);

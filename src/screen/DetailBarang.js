@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
-import {
-  Card,
-  CardImg,
-  CardText,
-  CardBody,
-  CardTitle,
-  CardSubtitle,
-  Button
-} from 'reactstrap';
+import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
+import { Redirect } from 'react-router-dom';
 export default class DetailBarang extends Component {
   state = {
     detailItem: {}
+  };
+  handleChange = e => {
+    const { detailItem } = this.state;
+    let { nama, harga, url } = detailItem;
+    detailItem[e.target.name] = e.target.value;
+    this.setState({
+      detailItem: detailItem
+    });
   };
   componentDidMount() {
     let barang = JSON.parse(localStorage.getItem('barang'));
@@ -19,23 +20,55 @@ export default class DetailBarang extends Component {
       detailItem: getDetailItem
     });
   }
+
+  handleSubmit = key => {
+    let barang = JSON.parse(localStorage.getItem('barang'));
+    barang.splice(key, 1, this.state.detailItem);
+    localStorage.setItem('barang', JSON.stringify(barang));
+    window.location.href = '/barang';
+  };
   render() {
     const { nama, harga, url } = this.state.detailItem;
     return (
       <div>
-        <Card style={{ height: 400 }}>
-          <CardImg top width="100%" src={url} alt="Card image cap" />
-          <CardBody>
-            <CardTitle>{nama}</CardTitle>
-            <CardSubtitle>Harga Rp {harga}</CardSubtitle>
-            <CardText>
-              Some quick example text to build on the card title and make up the
-              bulk of the card's content.
-            </CardText>
-            <Button>Beli</Button>
-            <Button>Batal</Button>
-          </CardBody>
-        </Card>
+        <Form>
+          <FormGroup>
+            <Label for="Nama Barang">Nama Barang</Label>
+            <Input
+              type="text"
+              name="nama"
+              placeholder="Nama Barang"
+              onChange={this.handleChange}
+              value={this.state.detailItem.nama}
+              required
+            />
+          </FormGroup>
+          <FormGroup>
+            <Label for="Nama Barang">Harga Baranng</Label>
+            <Input
+              type="number"
+              name="harga"
+              placeholder="Harga Barang"
+              onChange={this.handleChange}
+              value={this.state.detailItem.harga}
+              required
+            />
+          </FormGroup>
+          <FormGroup>
+            <Label for="Nama Barang">URL Gambar</Label>
+            <Input
+              type="text"
+              name="url"
+              placeholder="URL Gambar"
+              onChange={this.handleChange}
+              value={this.state.detailItem.url}
+              required
+            />
+          </FormGroup>
+          <Button onClick={() => this.handleSubmit(this.props.match.params.id)}>
+            Simpan
+          </Button>
+        </Form>
       </div>
     );
   }

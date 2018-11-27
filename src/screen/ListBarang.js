@@ -3,20 +3,24 @@ import { Table, Button } from 'reactstrap';
 import { Link } from 'react-router-dom';
 export default class ListBarang extends Component {
   state = {
-    barang: [],
-    transactionItems: []
+    barang: []
   };
-  handleBeli = e => {
-    const { transactionItems } = this.state;
-    const beli = this.state.barang[e];
-    transactionItems.push(beli);
-    localStorage.setItem('transaction', JSON.stringify(transactionItems));
-  };
+
   componentDidMount() {
     this.setState({
       barang: this.props.barang
     });
   }
+
+  hapus = key => {
+    const { barang } = this.state;
+    this.setState({
+      barang: barang.splice(key, 1)
+    });
+
+    localStorage.setItem('barang', JSON.stringify(barang));
+    this.render();
+  };
   render() {
     return (
       <div>
@@ -38,8 +42,14 @@ export default class ListBarang extends Component {
 
                   <td>
                     <Link to={`/barang/${key}`}>
-                      <Button>Detail Makanan</Button>
+                      <Button>Edit</Button>
                     </Link>
+                    <Button
+                      onClick={() => {
+                        this.hapus(key);
+                      }}>
+                      Hapus
+                    </Button>
                   </td>
                 </tr>
               );
