@@ -16,7 +16,10 @@ import {
 export default class Kasir extends Component {
   state = {
     barang: [],
-    transaction: []
+    transaction: [],
+    jumlah: 0,
+    pemasukan: 0,
+    kembalian: 0
   };
   tambah = key => {
     const { barang, transaction } = this.state;
@@ -55,14 +58,28 @@ export default class Kasir extends Component {
     let satuan = e.target.value;
     let data = this.state.transaction;
     let harga = data[key].harga;
+    let jumlahTotal = 0;
 
     data[key].satuan = satuan;
 
     data[key].jumlah = satuan * harga;
-    this.setState({
-      transaction: data
+    data.map((datum, key) => {
+      jumlahTotal += datum.jumlah;
     });
+    this.setState({
+      transaction: data,
+      jumlah: jumlahTotal
+    });
+
     console.log(data);
+  };
+
+  kembalian = e => {
+    let uang = e.target.value;
+    this.setState({
+      pemasukan: uang,
+      kembalian: uang - this.state.jumlah
+    });
   };
 
   render() {
@@ -71,36 +88,64 @@ export default class Kasir extends Component {
       <Container>
         <Row>
           <Col md={4}>
-            <Table>
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>Nama</th>
-                  <th>Harga</th>
-                  <th>Satuan</th>
-                  <th>Jumah</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.state.transaction.map((datum, key) => {
-                  return (
+            <Row style={{ height: 400 }}>
+              <Col>
+                <Table>
+                  <thead>
                     <tr>
-                      <th scope="row">{key + 1}</th>
-                      <td>{datum.nama}</td>
-                      <td>{datum.harga}</td>
-                      <td>
-                        <input
-                          type="number"
-                          style={{ width: 50, height: 20 }}
-                          onChange={e => this.SumHarga(key, e)}
-                        />
-                      </td>
-                      <td>{datum.jumlah}</td>
+                      <th>#</th>
+                      <th>Nama</th>
+                      <th>Harga</th>
+                      <th>Satuan</th>
+                      <th>Jumah</th>
                     </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
+                  </thead>
+                  <tbody>
+                    {this.state.transaction.map((datum, key) => {
+                      return (
+                        <tr>
+                          <th scope="row">{key + 1}</th>
+                          <td>{datum.nama}</td>
+                          <td>{datum.harga}</td>
+                          <td>
+                            <input
+                              type="number"
+                              style={{ width: 50, height: 20 }}
+                              onChange={e => this.SumHarga(key, e)}
+                            />
+                          </td>
+                          <td>{datum.jumlah}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </Table>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Table>
+                  <tbody>
+                    <tr>
+                      <th>Jumlah</th>
+                      <td>{this.state.jumlah}</td>
+                    </tr>
+                    <tr>
+                      <th>Masukan Uang</th>
+                      <input
+                        type="number"
+                        style={{ width: 150 }}
+                        onChange={this.kembalian}
+                      />
+                    </tr>
+                    <tr>
+                      <th>Kembalian</th>
+                      <td>{this.state.kembalian}</td>
+                    </tr>
+                  </tbody>
+                </Table>
+              </Col>
+            </Row>
           </Col>
           <Col md={8}>
             <Row>
