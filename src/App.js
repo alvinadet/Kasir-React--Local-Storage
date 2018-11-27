@@ -16,7 +16,7 @@ class App extends Component {
   getDerivedStateFromProps() {
     let barang = JSON.parse(localStorage.getItem('barang'));
     console.log('wiil mount');
-    const newArry = [1, 2, 3];
+
     this.setState(
       {
         barang: barang
