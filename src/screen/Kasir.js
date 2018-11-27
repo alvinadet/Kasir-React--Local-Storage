@@ -3,7 +3,6 @@ import {
   Container,
   Row,
   Col,
-  Form,
   Input,
   Table,
   Label,
@@ -17,7 +16,9 @@ export default class Kasir extends Component {
     nama: '',
     harga: 0,
     satuan: 0,
-    jumlah: 0
+    jumlahItem: 0,
+    isEdit: false,
+    key: null
   };
 
   handleChange = e => {
@@ -33,6 +34,34 @@ export default class Kasir extends Component {
       barang
     });
     console.log(barang);
+  };
+
+  handleGetEdit = key => {
+    const { barang } = this.state;
+    console.log(barang[key]);
+    this.setState({
+      nama: barang[key].nama,
+      harga: barang[key].harga,
+      satuan: barang[key].satuan,
+      key: key,
+      jumlah: barang[key].harga * barang[key].satuan,
+      isEdit: true
+    });
+  };
+
+  handleEdit = () => {
+    const { nama, harga, satuan, barang } = this.state;
+    let data = {
+      nama: nama,
+      harga: parseInt(harga),
+      satuan: parseInt(satuan),
+      jumlah: harga * satuan
+    };
+    barang.splice(this.state.key, 1, data);
+    this.setState({
+      barang,
+      isEdit: false
+    });
   };
 
   handleSubmit = () => {
@@ -90,7 +119,11 @@ export default class Kasir extends Component {
                               }}>
                               Hapus
                             </Button>
-                            <Button className="mx-1">Edit</Button>
+                            <Button
+                              className="mx-1"
+                              onClick={() => this.handleGetEdit(key)}>
+                              Edit
+                            </Button>
                           </td>
                         </tr>
                       );
@@ -105,7 +138,7 @@ export default class Kasir extends Component {
                   <tbody>
                     <tr>
                       <th>Jumlah</th>
-                      <td className="text-right">{this.state.jumlah}</td>
+                      <td className="text-right">{this.state.jumlahItem}</td>
                     </tr>
                     <tr>
                       <th>Masukan Uang</th>
@@ -163,10 +196,22 @@ export default class Kasir extends Component {
                   placeholder="Satuan"
                   required
                 />
-
-                <Button className="mt-4" onClick={() => this.handleSubmit()}>
-                  Simpan
-                </Button>
+                {this.state.isEdit ? (
+                  <div className="text-center ">
+                    <Button className="m-4" onClick={() => this.handleEdit()}>
+                      Simpan
+                    </Button>
+                    <Button
+                      className="m-4"
+                      onClick={() => this.setState({ isEdit: false })}>
+                      Batal
+                    </Button>
+                  </div>
+                ) : (
+                  <Button className="m-4" onClick={() => this.handleSubmit()}>
+                    Simpan
+                  </Button>
+                )}
               </Card>
             </Container>
           </Col>
