@@ -35,7 +35,11 @@ class App extends Component {
         </Switch>
 
         <Switch>
-          <Route path="/" exact={true} component={() => <Kasir />} />
+          <Route
+            path="/"
+            exact={true}
+            component={() => <Kasir barang={this.state.barang} />}
+          />
           <Route
             path="/barang"
             exact={true}
