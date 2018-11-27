@@ -3,7 +3,8 @@ import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 export default class DetailBarang extends Component {
   state = {
-    detailItem: {}
+    detailItem: {},
+    redirect: false
   };
   handleChange = e => {
     const { detailItem } = this.state;
@@ -25,7 +26,9 @@ export default class DetailBarang extends Component {
     let barang = JSON.parse(localStorage.getItem('barang'));
     barang.splice(key, 1, this.state.detailItem);
     localStorage.setItem('barang', JSON.stringify(barang));
-    window.location.href = '/barang';
+    this.setState({
+      redirect: true
+    });
   };
   render() {
     const { nama, harga, url } = this.state.detailItem;
@@ -65,9 +68,11 @@ export default class DetailBarang extends Component {
               required
             />
           </FormGroup>
-          <Button onClick={() => this.handleSubmit(this.props.match.params.id)}>
-            Simpan
-          </Button>
+          {this.state.redirect ? (
+            <Redirect to="/barang" />
+          ) : (
+            <Button onClick={() => this.handleSubmit()}>Simpan</Button>
+          )}
         </Form>
       </div>
     );

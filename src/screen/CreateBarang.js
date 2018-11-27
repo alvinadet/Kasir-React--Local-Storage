@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { Form, FormGroup, Label, Input, Button } from 'reactstrap';
+import { Redirect } from 'react-router-dom';
 
 export default class CreateBarang extends Component {
   state = {
     nama: '',
     harga: 0,
     url: '',
-    barang: []
+    barang: [],
+    redirect: false
   };
 
   handleChange = e => {
@@ -69,7 +71,11 @@ export default class CreateBarang extends Component {
               required
             />
           </FormGroup>
-          <Button onClick={() => this.handleSubmit()}>Simpan</Button>
+          {this.state.redirect ? (
+            <Redirect to="/barang" />
+          ) : (
+            <Button onClick={() => this.handleSubmit()}>Simpan</Button>
+          )}
         </Form>
       </div>
     );
