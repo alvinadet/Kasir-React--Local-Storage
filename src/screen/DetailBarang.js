@@ -8,12 +8,12 @@ export default class DetailBarang extends Component {
   };
   handleChange = e => {
     const { detailItem } = this.state;
-    let { nama, harga, url } = detailItem;
     detailItem[e.target.name] = e.target.value;
     this.setState({
       detailItem: detailItem
     });
   };
+
   componentDidMount() {
     let barang = JSON.parse(localStorage.getItem('barang'));
     let getDetailItem = barang[this.props.match.params.id];
@@ -31,7 +31,6 @@ export default class DetailBarang extends Component {
     });
   };
   render() {
-    const { nama, harga, url } = this.state.detailItem;
     return (
       <div>
         <Form>

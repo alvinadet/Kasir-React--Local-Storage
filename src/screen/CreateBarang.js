@@ -8,7 +8,7 @@ export default class CreateBarang extends Component {
     harga: 0,
     url: '',
     barang: [],
-    redirect: false
+    isRedirect: false
   };
 
   handleChange = e => {
@@ -28,17 +28,23 @@ export default class CreateBarang extends Component {
     barang.push(data);
     console.log(barang);
     localStorage.setItem('barang', JSON.stringify(barang));
+    this.setState({
+      isRedirect: true
+    });
   };
 
   componentDidMount() {
     this.setState({
       barang: this.props.barang
     });
+    console.log(this.state.barang);
   }
 
   render() {
     return (
       <div>
+        {this.state.isRedirect == true && <Redirect to="/barang" />}
+
         <h1>Tambah Barang</h1>
         <Form>
           <FormGroup>

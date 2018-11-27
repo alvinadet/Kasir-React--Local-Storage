@@ -33,20 +33,7 @@ export default class Example extends React.Component {
             <NavbarBrand href="/">Kasir</NavbarBrand>
           </Link>
           <NavbarToggler onClick={this.toggle} />
-          <Collapse isOpen={this.state.isOpen} navbar>
-            <Nav className="ml-auto" navbar>
-              <NavItem>
-                <Link to="/barang">
-                  <NavLink>List Barang</NavLink>
-                </Link>
-              </NavItem>
-              <NavItem>
-                <Link to="/barang/create">
-                  <NavLink>Create Barang</NavLink>
-                </Link>
-              </NavItem>
-            </Nav>
-          </Collapse>
+          <Collapse isOpen={this.state.isOpen} navbar />
         </Navbar>
       </div>
     );

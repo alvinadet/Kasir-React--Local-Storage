@@ -3,92 +3,63 @@ import {
   Container,
   Row,
   Col,
+  Form,
+  Input,
+  Table,
+  Label,
   Card,
-  CardImg,
-  CardText,
-  CardBody,
-  CardTitle,
-  CardSubtitle,
-  Button,
-  Table
+  Button
 } from 'reactstrap';
 
 export default class Kasir extends Component {
   state = {
     barang: [],
-    transaction: [],
-    jumlah: 0,
-    pemasukan: 0,
-    kembalian: 0
+    nama: '',
+    harga: 0,
+    satuan: 0,
+    jumlah: 0
   };
-  tambah = key => {
-    const { barang, transaction } = this.state;
-    let nemu = false;
-    barang[key]['jumlah'] = 0;
-    barang[key]['satuan'] = 0;
-    transaction.map((datum, id) => {
-      //   console.log(barang[key].nama);
-      if (datum.nama == barang[key].nama) {
-        nemu = true;
-      }
+
+  handleChange = e => {
+    this.setState({
+      [e.target.name]: e.target.value
     });
-
-    if (!nemu) {
-      this.setState({
-        transaction: transaction.concat(barang[key])
-      });
-    }
-
-    if (transaction.length == 0) {
-      this.setState({
-        transaction: transaction.concat(barang[key])
-      });
-    }
   };
-  componentDidMount() {
-    console.log(this.props.barang);
+
+  handleRemove = key => {
+    const { barang } = this.state;
+    barang.splice(key, 1);
     this.setState({
-      barang: this.props.barang
+      barang
     });
+    console.log(barang);
+  };
 
-    console.log(this.state.transaction, '>>>>>>>');
-  }
-
-  SumHarga = (key, e) => {
-    let satuan = e.target.value;
-    let data = this.state.transaction;
-    let harga = data[key].harga;
-    let jumlahTotal = 0;
-
-    data[key].satuan = satuan;
-
-    data[key].jumlah = satuan * harga;
-    data.map((datum, key) => {
-      jumlahTotal += datum.jumlah;
-    });
-    this.setState({
-      transaction: data,
-      jumlah: jumlahTotal,
-      kembalian: this.state.pemasukan - jumlahTotal
-    });
-
+  handleSubmit = () => {
+    const { nama, harga, satuan, barang } = this.state;
+    let data = {
+      nama: nama,
+      harga: parseInt(harga),
+      satuan: parseInt(satuan),
+      jumlah: harga * satuan
+    };
     console.log(data);
-  };
-
-  kembalian = e => {
-    let uang = e.target.value;
     this.setState({
-      pemasukan: uang,
-      kembalian: uang - this.state.jumlah
+      barang: barang.concat([data]),
+      nama: '',
+      harga: 0,
+      satuan: 0
     });
   };
+
+  sumBarang = () => {};
 
   render() {
-    console.log(this.state.transaction);
+    console.log(this.state.barang);
     return (
       <Container>
         <Row>
-          <Col md={4}>
+          <Col md={6}>
             <Row style={{ height: 400 }}>
               <Col>
                 <Table>
@@ -98,24 +69,29 @@ export default class Kasir extends Component {
                       <th>Nama</th>
                       <th>Harga</th>
                       <th>Satuan</th>
-                      <th>Jumah</th>
+                      <th>Jumlah</th>
+                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {this.state.transaction.map((datum, key) => {
+                    {this.state.barang.map((datas, key) => {
                       return (
                         <tr>
                           <th scope="row">{key + 1}</th>
-                          <td>{datum.nama}</td>
-                          <td>{datum.harga}</td>
+                          <td>{datas.nama}</td>
+                          <td className="text-right">{datas.harga}</td>
+                          <td className="text-right">{datas.satuan}</td>
+                          <td className="text-right">{datas.jumlah}</td>
                           <td>
-                            <input
-                              type="number"
-                              style={{ width: 50, height: 20 }}
-                              onChange={e => this.SumHarga(key, e)}
-                            />
+                            <Button
+                              className="mx-1"
+                              onClick={() => {
+                                this.handleRemove(key);
+                              }}>
+                              Hapus
+                            </Button>
+                            <Button className="mx-1">Edit</Button>
                           </td>
-                          <td>{datum.jumlah}</td>
                         </tr>
                       );
                     })}
@@ -129,53 +105,70 @@ export default class Kasir extends Component {
                   <tbody>
                     <tr>
                       <th>Jumlah</th>
-                      <td>{this.state.jumlah}</td>
+                      <td className="text-right">{this.state.jumlah}</td>
                     </tr>
                     <tr>
                       <th>Masukan Uang</th>
-                      <input
-                        type="number"
-                        style={{ width: 150 }}
-                        onChange={this.kembalian}
-                      />
+                      <td className="text-right">
+                        <input
+                          className="text-right"
+                          type="number"
+                          style={{ width: 150 }}
+                          onChange={this.kembalian}
+                        />
+                      </td>
                     </tr>
                     <tr>
                       <th>Kembalian</th>
-                      <td>{this.state.kembalian}</td>
+                      <td className="text-right">{this.state.kembalian}</td>
                     </tr>
                   </tbody>
                 </Table>
               </Col>
             </Row>
           </Col>
-          <Col md={8}>
-            <Row>
-              {this.state.barang.map((datum, key) => {
-                return (
-                  <Col md={4} className="my-4">
-                    <Card>
-                      <CardImg
-                        top
-                        width="100%"
-                        src={datum.url}
-                        alt="Card image cap"
-                      />
-                      <CardBody>
-                        <CardTitle>{datum.nama}</CardTitle>
-                        <CardSubtitle>{datum.harga}</CardSubtitle>
-                        <CardText />
-                        <Button
-                          onClick={() => {
-                            this.tambah(key);
-                          }}>
-                          Pilih
-                        </Button>
-                      </CardBody>
-                    </Card>
-                  </Col>
-                );
-              })}
-            </Row>
+
+          <Col md={6} className="">
+            <Container>
+              <Card style={{ width: 300 }} className="p-4">
+                <Label className for="Nama Barang">
+                  Nama Barang
+                </Label>
+                <Input
+                  type="text"
+                  name="nama"
+                  onChange={this.handleChange}
+                  placeholder="Nama Barang"
+                  value={this.state.nama}
+                  required
+                />
+
+                <Label for="Harga Barang">Harga Barang</Label>
+                <Input
+                  type="number"
+                  name="harga"
+                  value={this.state.harga}
+                  onChange={this.handleChange}
+                  placeholder="Harga Barang"
+                  on
+                  required
+                />
+
+                <Label for="Satuan">Satuan</Label>
+                <Input
+                  type="number"
+                  name="satuan"
+                  value={this.state.satuan}
+                  onChange={this.handleChange}
+                  placeholder="Satuan"
+                  required
+                />
+
+                <Button className="mt-4" onClick={() => this.handleSubmit()}>
+                  Simpan
+                </Button>
+              </Card>
+            </Container>
           </Col>
         </Row>
       </Container>
